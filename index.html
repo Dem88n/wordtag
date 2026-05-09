@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>wordTAG</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="intro-screen" class="screen active">
+        <h1 class="logo">Word<span class="tag-color">TAG</span></h1>
+        <button id="enter-btn" class="pill-btn" onclick="enterApp()">Giriş</button>
+    </div>
+
+    <div id="lang-screen" class="screen">
+        <button class="exit-btn pill-btn" onclick="showScreen('intro-screen')">Çıkış</button>
+        <h2 class="main-title" style="margin-bottom: 50px;">Öğrenmek İstediğin Dili Seç</h2>
+        <div class="selection-grid">
+            <div class="liquid-card lang-card" onclick="selectLanguage('İngilizce')"><span>İngilizce</span></div>
+            <div class="liquid-card lang-card locked"><span>Türkçe <br>🔒</span></div>
+            <div class="liquid-card lang-card" onclick="selectLanguage('İtalyanca')"><span>İtalyanca</span></div>
+        </div>
+    </div>
+
+    <div id="category-screen" class="screen">
+        <button class="back-btn pill-btn" onclick="showScreen('lang-screen')">&#8592; Geri</button>
+        <h2 id="category-title" class="section-title" style="margin-bottom: 50px;">Kategoriler</h2>
+        <div class="selection-grid" id="category-container"></div>
+    </div>
+
+    <div id="subcategory-screen" class="screen">
+        <button class="back-btn pill-btn" onclick="showScreen('category-screen')">&#8592; Geri</button>
+        <h2 id="subcategory-title" class="section-title">Alt Kategoriler</h2>
+        <p class="instruction" style="margin-bottom: 30px; font-size: 16px;">Çalışmak istediğin konuları seç:</p>
+        <div id="subcategory-container" class="selection-grid"></div>
+        <button class="start-btn pill-btn" onclick="startSelectedSubcategories()">Başla</button>
+    </div>
+
+    <div id="app-screen" class="screen">
+        <button class="back-btn pill-btn" onclick="showScreen('category-screen')">&#8592; Çıkış</button>
+        <div class="game-info">
+            <div class="timer pill-btn" id="timer-display">05:00</div>
+        </div>
+        <div id="combo-container"></div>
+        <div id="card-container"></div>
+        <div class="instruction">
+            Arkasını görmek için tıkla.<br>
+            Biliyorsan SAĞA, bilmiyorsan SOLA kaydır.
+        </div>
+    </div>
+
+    <div id="result-screen" class="screen">
+        <h2 class="section-title">Test Bitti!</h2>
+        <div class="result-stats">
+            <p id="correct-text" style="color: #4CAF50; font-size: 24px; font-weight: bold;">Doğru: 0</p>
+            <p id="wrong-text" style="color: #F44336; font-size: 24px; font-weight: bold;">Yanlış: 0</p>
+        </div>
+        <button class="pill-btn" style="margin-top: 30px;" onclick="showScreen('category-screen')">Kategorilere Dön</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

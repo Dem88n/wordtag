@@ -1,0 +1,128 @@
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
+body { background-color: #ffffff; color: #333; overflow: hidden; }
+
+/* Ekran Yönetimi ve Kaydırma (Scroll) Çözümü */
+.screen { 
+    display: none; 
+    height: 100vh; 
+    padding: 80px 20px 40px 20px; /* Üstten buton boşluğu bırakıldı */
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: flex-start; /* İçeriğin yukarıdan aşağı dizilmesi sağlandı */
+    position: relative; 
+    overflow-y: auto; /* Ekrana sığmayan yerler için kaydırma açıldı */
+    overflow-x: hidden;
+}
+.screen.active { display: flex; }
+
+/* Giriş ve Oyun ekranı tam ortada dursun */
+#intro-screen, #app-screen { justify-content: center; padding-top: 20px; overflow-y: hidden; }
+
+/* Giriş Ekranı */
+.logo { font-size: 56px; font-weight: 900; letter-spacing: 2px; margin-bottom: 40px; color: #333; }
+.tag-color { color: #4CAF50; }
+
+/* Hap Butonlar */
+.pill-btn {
+    background: #f2f2f2; color: #333; border: 2px solid #ccc; border-radius: 50px;
+    padding: 12px 30px; font-size: 18px; font-weight: bold; cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: all 0.3s ease;
+}
+.pill-btn:hover {
+    background-color: #4CAF50; color: white; border-color: #4CAF50;
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.8); transform: translateY(-2px);
+}
+.exit-btn:hover { background-color: #F44336 !important; border-color: #F44336 !important; box-shadow: 0 0 15px rgba(244, 67, 54, 0.8) !important; }
+.back-btn:hover { background-color: #95a5a6 !important; border-color: #95a5a6 !important; box-shadow: 0 0 15px rgba(149, 165, 166, 0.8) !important; }
+
+/* SADECE Geri ve Çıkış Butonları Sola Sabitlenecek */
+.exit-btn, .back-btn { position: absolute; top: 20px; left: 20px; font-size: 14px; padding: 8px 20px; z-index: 100; }
+
+/* Başla Butonu Ayarları */
+.start-btn { margin-top: 30px; margin-bottom: 30px; width: 200px; background-color: #e0f2f1; z-index: 10; }
+
+/* Süre Alanı */
+.timer { border-color: #333; font-variant-numeric: tabular-nums; background: white;}
+.timer.danger { border-color: #F44336; background-color: #F44336; color: white; animation: heartbeat 1s infinite; }
+
+@keyframes heartbeat {
+    0% { transform: scale(1); box-shadow: 0 0 0 rgba(244, 67, 54, 0); }
+    50% { transform: scale(1.15); box-shadow: 0 0 15px rgba(244, 67, 54, 0.6); }
+    100% { transform: scale(1); box-shadow: 0 0 0 rgba(244, 67, 54, 0); }
+}
+
+/* Başlıklar ve Grid */
+.main-title, .section-title { margin-bottom: 40px; text-align: center; font-size: 28px; }
+.selection-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; width: 100%; max-width: 800px; }
+
+.liquid-card {
+    background: white; border: 2px solid #e0e0e0; border-radius: 15px;
+    width: 30%; min-width: 130px; height: 150px; font-size: 15px; font-weight: bold;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    cursor: pointer; position: relative; overflow: hidden; text-align: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.liquid-card span { position: relative; z-index: 2; padding: 5px; pointer-events: none; }
+.liquid-card.locked { opacity: 0.6; cursor: not-allowed; background: #f1f1f1; }
+.liquid-card::before {
+    content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 0;
+    background: rgba(180, 255, 180, 0.9); z-index: 1; transition: height 0.4s ease-in-out;
+}
+.liquid-card:not(.locked):hover::before, .liquid-card.selected::before { height: 100%; }
+.liquid-card:not(.locked):hover, .liquid-card.selected {
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.7); border-color: #4CAF50; 
+    transition: box-shadow 0.2s 0.4s, border-color 0.2s 0.4s, transform 0.2s;
+}
+.mixed-card::before { background: rgba(255, 200, 150, 0.9); }
+.mixed-card:hover { box-shadow: 0 0 20px rgba(255, 152, 0, 0.8) !important; border-color: #FF9800 !important; }
+
+/* Oyun Ekranı ve Kartlar */
+.game-info { position: absolute; top: 20px; display: flex; flex-direction: column; align-items: center; z-index: 5;}
+#card-container { position: relative; width: 100%; max-width: 320px; height: 420px; margin-top: 50px; perspective: 1200px; z-index: 2; }
+.card { position: absolute; width: 100%; height: 100%; background: transparent; border-radius: 20px; }
+.card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1); transform-style: preserve-3d; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+.card.is-flipped .card-inner { transform: rotateY(180deg); }
+
+.card-front, .card-back { 
+    position: absolute; width: 100%; height: 100%; backface-visibility: hidden; 
+    display: flex; flex-direction: column; justify-content: center; align-items: center; 
+    border-radius: 20px; border: 2px solid #eee; overflow: hidden;
+}
+
+.card-front { background: #ffffff; }
+.card-back { background: #e8f5e9; border-color: #a5d6a7; transform: rotateY(180deg); } 
+.card-front h1, .card-back h1 { font-size: 34px; margin-bottom: 10px; z-index: 5; position: relative;}
+.card-front p { font-size: 18px; color: #888; z-index: 5; position: relative;}
+.roman-numeral { position: absolute; top: 15px; right: 20px; font-size: 18px; font-weight: bold; color: #aaa; font-family: serif; z-index: 5;}
+
+/* YATAY BİLDİM / BİLEMEDİM Yazıları (Sağda ve Solda) */
+.overlay-text {
+    position: absolute; top: 40px; font-size: 26px; font-weight: 900; opacity: 0; z-index: 10;
+    pointer-events: none; letter-spacing: 2px; padding: 5px 15px; border-radius: 8px; border: 4px solid;
+    background: rgba(255, 255, 255, 0.85); /* Kartın arkasını hafif kapatıp okunaklı yapar */
+}
+.text-bildim { right: 15px; color: #4CAF50; border-color: #4CAF50; transform: rotate(0deg); }
+.text-bilemedim { left: 15px; color: #F44336; border-color: #F44336; transform: rotate(0deg); }
+
+/* Yıldız Efektleri */
+.star-particle { position: absolute; font-size: 20px; pointer-events: none; z-index: 1; animation: flyStar 0.7s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+@keyframes flyStar {
+    0% { transform: translate(0, 0) scale(0.5) rotate(0deg); opacity: 1; }
+    100% { transform: translate(var(--tx), var(--ty)) scale(1.5) rotate(180deg); opacity: 0; }
+}
+
+/* Kombo Sistemi CSS */
+#combo-container { position: absolute; top: 15%; width: 100%; text-align: center; pointer-events: none; z-index: 0; display: flex; flex-direction: column; align-items: center; }
+.combo-text { font-size: 30px; font-weight: 900; opacity: 0; text-transform: uppercase; letter-spacing: 2px; animation: popUp 1.2s forwards; }
+.combo-correct { color: #4CAF50; text-shadow: 0 4px 15px rgba(76,175,80,0.6); }
+.combo-wrong { color: #F44336; text-shadow: 0 4px 15px rgba(244,67,54,0.6); }
+@keyframes popUp { 
+    0% { opacity: 0; transform: scale(0.5) translateY(20px); } 
+    20% { opacity: 1; transform: scale(1.2) translateY(0); } 
+    80% { opacity: 1; transform: scale(1) translateY(-10px); } 
+    100% { opacity: 0; transform: scale(0.9) translateY(-30px); } 
+}
+
+.instruction { position: absolute; bottom: 20px; text-align: center; color: #777; font-size: 14px; width: 100%; }
+.result-stats { background: white; padding: 30px; border-radius: 15px; border: 2px solid #eee; text-align: center; width: 100%; max-width: 300px; margin-top: 20px; }

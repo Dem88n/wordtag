@@ -1,5 +1,19 @@
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
-body { background-color: #ffffff; color: #333; overflow: hidden; }
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    user-select: none; 
+    -webkit-user-select: none; /* iOS ve Safari için metin seçmeyi engeller */
+    -webkit-touch-callout: none; /* iOS kopyalama pop-up'ını engeller */
+}
+
+body { 
+    background-color: #ffffff; 
+    color: #333; 
+    overflow: hidden; 
+    touch-action: manipulation; /* Çift tıklayarak yakınlaştırmayı engeller */
+}
 
 /* Ekran Yönetimi ve Kaydırma (Scroll) Çözümü */
 .screen { 

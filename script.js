@@ -296,7 +296,11 @@ function loadCard() {
     
     let startX = 0, currentX = 0, isDragging = false;
 
-    function dragStart(x) { startX = x; isDragging = true; }
+    function dragStart(x) { 
+        startX = x; 
+        currentX = x;
+        isDragging = true; 
+    }
 
     function dragMove(x) {
         if (!isDragging) return;

@@ -224,7 +224,7 @@ function triggerComboMechanic(type) {
         const comboEl = document.createElement('div');
         comboEl.className = `combo-text ${type === 'correct' ? 'combo-correct' : 'combo-wrong'}`;
         
-        let phrases = type === 'correct' ? ["Harika!", "Süper!", "Mükemmel!"] : ["Dikkat!", "Odaklan!", "Olmadı!"];
+        let phrases = type === 'correct' ? ["Harika!", "Süper!", "Mükemmel!", "Ateş Ediyorsun!"] : ["Dikkat!", "Odaklan!", "Olmadı!", "Toparlan!"];
         let randomPhrase;
 
         do { randomPhrase = phrases[Math.floor(Math.random() * phrases.length)]; } 
@@ -269,7 +269,6 @@ function loadCard() {
     const card = document.createElement('div');
     card.className = 'card';
 
-    // HTML sadeleştirildi, overlay-text sınıfları style.css'ten beslenecek
     card.innerHTML = `
         <div class="card-inner">
             <div class="card-front" id="c-front">
@@ -294,8 +293,6 @@ function loadCard() {
     const textsBildim = card.querySelectorAll('.text-bildim');
     const textsBilemedim = card.querySelectorAll('.text-bilemedim');
     
-    let startX = 0, currentX = 0, isDragging = false;
-
     let startX = 0, currentX = 0, isDragging = false, isMoved = false;
 
     function dragStart(x) { 
@@ -310,12 +307,11 @@ function loadCard() {
         currentX = x;
         let deltaX = currentX - startX;
 
-        // Parmak 20 pikselden az oynadıysa "tıklama" (titreme) kabul et, animasyonu başlatma!
+        // Parmak 20 pikselden az oynadıysa "tıklama" kabul et, animasyonu başlatma!
         if (Math.abs(deltaX) > 20) {
             isMoved = true;
         }
 
-        // Sadece gerçekten sürüklendiyse (isMoved) sağa/sola çekme efektlerini göster
         if (isMoved) {
             card.style.transform = `translateX(${deltaX}px) rotate(${deltaX * 0.05}deg)`;
 
@@ -341,7 +337,7 @@ function loadCard() {
         isDragging = false;
         let deltaX = currentX - startX;
 
-        // EĞER KART HİÇ SÜRÜKLENMEDİYSE (SADECE TIKLANDIYSA DÖNDÜR)
+        // KART HİÇ SÜRÜKLENMEDİYSE SADECE DÖNDÜR
         if (!isMoved) {
             card.style.transform = `translateX(0px) rotate(0deg)`;
             card.classList.toggle('is-flipped');
@@ -352,47 +348,7 @@ function loadCard() {
             return; 
         }
 
-        // EĞER KART GERÇEKTEN SÜRÜKLENDİYSE (SAĞA / SOLA ATMA KONTROLÜ)
-        if (Math.abs(deltaX) > 100) { 
-            card.style.transition = "transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.8s";
-            card.style.opacity = "0";
-
-            if (deltaX > 0) {
-                card.style.transform = `translateX(600px) translateY(-50px) rotate(30deg)`;
-                correctCount++; handleAnswerCombo(true); triggerStars(true); triggerComboMechanic('correct');
-            } else {
-                card.style.transform = `translateX(-600px) translateY(-50px) rotate(-30deg)`;
-                wrongCount++; handleAnswerCombo(false); triggerComboMechanic('wrong');
-            }
-            setTimeout(() => { currentIndex++; loadCard(); }, 600);
-        } else {
-            // Yeterince uzağa çekilmediyse yerine geri oturt
-            card.style.transition = "transform 0.3s ease, background 0.3s";
-            card.style.transform = `translateX(0px) rotate(0deg)`;
-            cFront.style.background = "#ffffff";
-            cBack.style.background = "#e8f5e9";
-            textsBildim.forEach(el => el.style.opacity = 0); 
-            textsBilemedim.forEach(el => el.style.opacity = 0);
-            setTimeout(() => { card.style.transition = "transform 0.3s ease"; }, 300);
-        }
-    }
-
-    function dragEnd() {
-        if (!isDragging) return;
-        isDragging = false;
-        let deltaX = currentX - startX;
-
-        if (Math.abs(deltaX) < 15 || currentX === 0) {
-            card.style.transform = `translateX(0px) rotate(0deg)`;
-            card.classList.toggle('is-flipped');
-            cFront.style.background = "#ffffff";
-            cBack.style.background = "#e8f5e9";
-            textsBildim.forEach(el => el.style.opacity = 0); 
-            textsBilemedim.forEach(el => el.style.opacity = 0);
-            currentX = 0;
-            return; 
-        }
-
+        // KART GERÇEKTEN SÜRÜKLENDİYSE SAĞA/SOLA AT
         if (Math.abs(deltaX) > 100) { 
             card.style.transition = "transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.8s";
             card.style.opacity = "0";
@@ -414,9 +370,9 @@ function loadCard() {
             textsBilemedim.forEach(el => el.style.opacity = 0);
             setTimeout(() => { card.style.transition = "transform 0.3s ease"; }, 300);
         }
-        currentX = 0; 
     }
 
+    // EVENT LİSTENER KISMI (Eski kodda silinmiş olabilecek kısım)
     card.addEventListener('touchstart', (e) => dragStart(e.touches[0].clientX));
     card.addEventListener('touchmove', (e) => dragMove(e.touches[0].clientX));
     card.addEventListener('touchend', dragEnd);

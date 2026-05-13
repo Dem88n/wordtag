@@ -130,3 +130,13 @@ body { background-color: #ffffff; color: #333; overflow: hidden; touch-action: m
 }
 
 .result-stats { background: white; padding: 30px; border-radius: 15px; border: 2px solid #eee; text-align: center; width: 100%; max-width: 300px; margin-top: 20px; }
+
+/* KART ÇEVRİLMEDEN KAYDIRILMAYA ÇALIŞILIRSA ÇALIŞACAK TİTREME EFEKTİ */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-10px); }
+    40%, 80% { transform: translateX(10px); }
+}
+.shake {
+    animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}

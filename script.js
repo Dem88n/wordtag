@@ -40,7 +40,6 @@ function showScreen(screenId) {
     document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
     document.getElementById(screenId).classList.add('active');
     
-    // Süre kontrolü
     const timerDisplay = document.getElementById('timer-display');
     if (timerDisplay) {
         if(screenId === 'app-screen' && isMixedMode) {
@@ -111,7 +110,6 @@ async function selectLanguage(lang) {
             container.appendChild(div);
         });
 
-        // Karışık Kategori Ekleme
         const mixDiv = document.createElement('div');
         mixDiv.className = 'liquid-card mixed-card';
         mixDiv.innerHTML = `<span>Karışık <br><small>(Tümü & Süreli)</small></span>`;
@@ -144,7 +142,6 @@ function openSubcategories(category) {
     showScreen('subcategory-screen');
 }
 
-// Seçili Kategorilerle Başlat
 function startSelectedSubcategories() {
     words = [];
     isMixedMode = false; 
@@ -167,7 +164,6 @@ function startSelectedSubcategories() {
     startGameEngine();
 }
 
-// Karışık Oyun Başlat
 function startMixedGame() {
     words = [];
     isMixedMode = true; 
@@ -255,6 +251,7 @@ function triggerStars(isCorrect) {
     }
 }
 
+// --- KART YÜKLEME VE KAYDIRMA (GÜNCELLENDİ) ---
 function loadCard() {
     const container = document.getElementById('card-container');
     container.innerHTML = "";
@@ -293,13 +290,14 @@ function loadCard() {
     const textsBildim = card.querySelectorAll('.text-bildim');
     const textsBilemedim = card.querySelectorAll('.text-bilemedim');
     
-    let startX = 0, currentX = 0, isDragging = false, isMoved = false;
+    // YENİ KURAL: hasFlipped (Kart çevrildi mi?)
+    let startX = 0, currentX = 0, isDragging = false, isMoved = false, hasFlipped = false;
 
     function dragStart(x) { 
         startX = x; 
         currentX = x; 
         isDragging = true; 
-        isMoved = false; // Her yeni dokunuşta hareketi sıfırla
+        isMoved = false; 
     }
 
     function dragMove(x) {
@@ -307,12 +305,21 @@ function loadCard() {
         currentX = x;
         let deltaX = currentX - startX;
 
-        // Parmak 20 pikselden az oynadıysa "tıklama" kabul et, animasyonu başlatma!
+        // Parmak 20 pikselden fazla kaydıysa "Hareket Ediyor" say
         if (Math.abs(deltaX) > 20) {
             isMoved = true;
         }
 
         if (isMoved) {
+            // EĞER KARTI ÇEVİRMEDEN KAYDIRMAYA ÇALIŞIYORSA:
+            if (!hasFlipped) {
+                isDragging = false; // Kaydırmayı iptal et
+                card.classList.add('shake'); // Titret
+                setTimeout(() => card.classList.remove('shake'), 400); // Titremeyi bitir
+                return;
+            }
+
+            // Çevrildiyse özgürce sağa sola çekebilir
             card.style.transform = `translateX(${deltaX}px) rotate(${deltaX * 0.05}deg)`;
 
             let percent = Math.abs(deltaX) / 200;
@@ -337,18 +344,13 @@ function loadCard() {
         isDragging = false;
         let deltaX = currentX - startX;
 
-        // KART HİÇ SÜRÜKLENMEDİYSE SADECE DÖNDÜR
-        if (!isMoved) {
+        // Kart sadece tıklandıysa veya hiç çevrilmediyse hiçbir şey yapma 
+        // (Çevirme işini native 'click' eventine devrettik)
+        if (!isMoved || !hasFlipped) {
             card.style.transform = `translateX(0px) rotate(0deg)`;
-            card.classList.toggle('is-flipped');
-            cFront.style.background = "#ffffff";
-            cBack.style.background = "#e8f5e9";
-            textsBildim.forEach(el => el.style.opacity = 0); 
-            textsBilemedim.forEach(el => el.style.opacity = 0);
             return; 
         }
 
-        // KART GERÇEKTEN SÜRÜKLENDİYSE SAĞA/SOLA AT
         if (Math.abs(deltaX) > 100) { 
             card.style.transition = "transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.8s";
             card.style.opacity = "0";
@@ -372,7 +374,20 @@ function loadCard() {
         }
     }
 
-    // EVENT LİSTENER KISMI (Eski kodda silinmiş olabilecek kısım)
+    // İŞTE SİHRİN KOPTUĞU YER: Tıklama Tespiti
+    // Sadece "Click" ile çalışır, basılı tutmaya gerek kalmaz, pürüzsüz döner.
+    card.addEventListener('click', () => {
+        if (!isMoved) { // Eğer kaydırmadıysa, sadece tıkladıysa
+            card.classList.toggle('is-flipped');
+            hasFlipped = true; // Kart çevrildi onayını ver!
+            cFront.style.background = "#ffffff";
+            cBack.style.background = "#e8f5e9";
+            textsBildim.forEach(el => el.style.opacity = 0); 
+            textsBilemedim.forEach(el => el.style.opacity = 0);
+        }
+    });
+
+    // Touch ve Mouse Eventleri
     card.addEventListener('touchstart', (e) => dragStart(e.touches[0].clientX));
     card.addEventListener('touchmove', (e) => dragMove(e.touches[0].clientX));
     card.addEventListener('touchend', dragEnd);

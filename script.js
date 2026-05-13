@@ -296,31 +296,84 @@ function loadCard() {
     
     let startX = 0, currentX = 0, isDragging = false;
 
+    let startX = 0, currentX = 0, isDragging = false, isMoved = false;
+
     function dragStart(x) { 
         startX = x; 
-        currentX = x;
+        currentX = x; 
         isDragging = true; 
+        isMoved = false; // Her yeni dokunuşta hareketi sıfırla
     }
 
     function dragMove(x) {
         if (!isDragging) return;
         currentX = x;
         let deltaX = currentX - startX;
-        card.style.transform = `translateX(${deltaX}px) rotate(${deltaX * 0.05}deg)`;
 
-        let percent = Math.abs(deltaX) / 200;
-        if (percent > 1) percent = 1;
+        // Parmak 20 pikselden az oynadıysa "tıklama" (titreme) kabul et, animasyonu başlatma!
+        if (Math.abs(deltaX) > 20) {
+            isMoved = true;
+        }
 
-        if (deltaX > 0) {
-            cFront.style.background = `linear-gradient(to right, rgba(76, 175, 80, 0.8) ${percent * 100}%, #ffffff ${(percent * 100) + 15}%)`;
-            cBack.style.background = `linear-gradient(to left, rgba(76, 175, 80, 0.8) ${percent * 100}%, #e8f5e9 ${(percent * 100) + 15}%)`;
-            textsBildim.forEach(el => el.style.opacity = percent);
+        // Sadece gerçekten sürüklendiyse (isMoved) sağa/sola çekme efektlerini göster
+        if (isMoved) {
+            card.style.transform = `translateX(${deltaX}px) rotate(${deltaX * 0.05}deg)`;
+
+            let percent = Math.abs(deltaX) / 200;
+            if (percent > 1) percent = 1;
+
+            if (deltaX > 0) {
+                cFront.style.background = `linear-gradient(to right, rgba(76, 175, 80, 0.8) ${percent * 100}%, #ffffff ${(percent * 100) + 15}%)`;
+                cBack.style.background = `linear-gradient(to left, rgba(76, 175, 80, 0.8) ${percent * 100}%, #e8f5e9 ${(percent * 100) + 15}%)`;
+                textsBildim.forEach(el => el.style.opacity = percent);
+                textsBilemedim.forEach(el => el.style.opacity = 0);
+            } else {
+                cFront.style.background = `linear-gradient(to left, rgba(244, 67, 54, 0.8) ${percent * 100}%, #ffffff ${(percent * 100) + 15}%)`;
+                cBack.style.background = `linear-gradient(to right, rgba(244, 67, 54, 0.8) ${percent * 100}%, #e8f5e9 ${(percent * 100) + 15}%)`;
+                textsBilemedim.forEach(el => el.style.opacity = percent);
+                textsBildim.forEach(el => el.style.opacity = 0);
+            }
+        }
+    }
+
+    function dragEnd() {
+        if (!isDragging) return;
+        isDragging = false;
+        let deltaX = currentX - startX;
+
+        // EĞER KART HİÇ SÜRÜKLENMEDİYSE (SADECE TIKLANDIYSA DÖNDÜR)
+        if (!isMoved) {
+            card.style.transform = `translateX(0px) rotate(0deg)`;
+            card.classList.toggle('is-flipped');
+            cFront.style.background = "#ffffff";
+            cBack.style.background = "#e8f5e9";
+            textsBildim.forEach(el => el.style.opacity = 0); 
             textsBilemedim.forEach(el => el.style.opacity = 0);
+            return; 
+        }
+
+        // EĞER KART GERÇEKTEN SÜRÜKLENDİYSE (SAĞA / SOLA ATMA KONTROLÜ)
+        if (Math.abs(deltaX) > 100) { 
+            card.style.transition = "transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.8s";
+            card.style.opacity = "0";
+
+            if (deltaX > 0) {
+                card.style.transform = `translateX(600px) translateY(-50px) rotate(30deg)`;
+                correctCount++; handleAnswerCombo(true); triggerStars(true); triggerComboMechanic('correct');
+            } else {
+                card.style.transform = `translateX(-600px) translateY(-50px) rotate(-30deg)`;
+                wrongCount++; handleAnswerCombo(false); triggerComboMechanic('wrong');
+            }
+            setTimeout(() => { currentIndex++; loadCard(); }, 600);
         } else {
-            cFront.style.background = `linear-gradient(to left, rgba(244, 67, 54, 0.8) ${percent * 100}%, #ffffff ${(percent * 100) + 15}%)`;
-            cBack.style.background = `linear-gradient(to right, rgba(244, 67, 54, 0.8) ${percent * 100}%, #e8f5e9 ${(percent * 100) + 15}%)`;
-            textsBilemedim.forEach(el => el.style.opacity = percent);
-            textsBildim.forEach(el => el.style.opacity = 0);
+            // Yeterince uzağa çekilmediyse yerine geri oturt
+            card.style.transition = "transform 0.3s ease, background 0.3s";
+            card.style.transform = `translateX(0px) rotate(0deg)`;
+            cFront.style.background = "#ffffff";
+            cBack.style.background = "#e8f5e9";
+            textsBildim.forEach(el => el.style.opacity = 0); 
+            textsBilemedim.forEach(el => el.style.opacity = 0);
+            setTimeout(() => { card.style.transition = "transform 0.3s ease"; }, 300);
         }
     }
 

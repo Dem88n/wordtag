@@ -1,21 +1,21 @@
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
 body { background-color: #ffffff; color: #333; overflow: hidden; touch-action: manipulation; }
 
-/* Ekran Yönetimi ve MOBİL KAYDIRMA (Scroll) Çözümü */
+/* Ekran Yönetimi ve MOBİL KAYDIRMA Çözümü */
 .screen { 
     display: none; 
-    height: 100vh; /* Eski cihazlar için yedek */
-    height: 100dvh; /* MOBİL ADRES ÇUBUĞU SORUNUNU ÇÖZER (Dinamik Yükseklik) */
+    height: 100vh; 
+    height: 100dvh; 
     width: 100vw;
-    padding: 80px 20px 120px 20px; /* Butonun altta kalmasını önlemek için alt boşluk çok artırıldı */
+    padding: 80px 20px 120px 20px; 
     flex-direction: column; 
     align-items: center; 
     justify-content: flex-start; 
     position: absolute; 
     top: 0; left: 0;
-    overflow-y: auto; /* Kaydırmayı aktifleştirir */
+    overflow-y: auto; 
     overflow-x: hidden;
-    -webkit-overflow-scrolling: touch; /* iOS Safari'de kaymak gibi (smooth) scroll sağlar */
+    -webkit-overflow-scrolling: touch; 
 }
 .screen.active { display: flex; }
 
@@ -37,8 +37,6 @@ body { background-color: #ffffff; color: #333; overflow: hidden; touch-action: m
 .back-btn:hover { background-color: #95a5a6 !important; border-color: #95a5a6 !important; box-shadow: 0 0 15px rgba(149, 165, 166, 0.8) !important; }
 
 .exit-btn, .back-btn { position: absolute; top: 20px; left: 20px; font-size: 14px; padding: 8px 20px; z-index: 100; }
-
-/* Başla Butonu Ayarları (Ezilmesini engelledik) */
 .start-btn { margin-top: 30px; margin-bottom: 50px; width: 200px; background-color: #e0f2f1; z-index: 10; flex-shrink: 0; }
 
 .timer { border-color: #333; font-variant-numeric: tabular-nums; background: white;}
@@ -63,18 +61,13 @@ body { background-color: #ffffff; color: #333; overflow: hidden; touch-action: m
 
 .liquid-card span { position: relative; z-index: 2; padding: 5px; pointer-events: none; }
 .liquid-card.locked { opacity: 0.6; cursor: not-allowed; background: #f1f1f1; }
-.liquid-card::before {
-    content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 0;
-    background: rgba(180, 255, 180, 0.9); z-index: 1; transition: height 0.4s ease-in-out;
-}
+.liquid-card::before { content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 0; background: rgba(180, 255, 180, 0.9); z-index: 1; transition: height 0.4s ease-in-out; }
 .liquid-card:not(.locked):hover::before, .liquid-card.selected::before { height: 100%; }
-.liquid-card:not(.locked):hover, .liquid-card.selected {
-    box-shadow: 0 0 20px rgba(76, 175, 80, 0.7); border-color: #4CAF50; 
-    transition: box-shadow 0.2s 0.4s, border-color 0.2s 0.4s, transform 0.2s;
-}
+.liquid-card:not(.locked):hover, .liquid-card.selected { box-shadow: 0 0 20px rgba(76, 175, 80, 0.7); border-color: #4CAF50; transition: box-shadow 0.2s 0.4s, border-color 0.2s 0.4s, transform 0.2s; }
 .mixed-card::before { background: rgba(255, 200, 150, 0.9); }
 .mixed-card:hover { box-shadow: 0 0 20px rgba(255, 152, 0, 0.8) !important; border-color: #FF9800 !important; }
 
+/* KART TASARIMI VE İÇERİĞİ */
 .game-info { position: absolute; top: 20px; display: flex; flex-direction: column; align-items: center; z-index: 5;}
 #card-container { position: relative; width: 100%; max-width: 320px; height: 420px; margin-top: 50px; perspective: 1200px; z-index: 2; }
 .card { position: absolute; width: 100%; height: 100%; background: transparent; border-radius: 20px; }
@@ -82,16 +75,26 @@ body { background-color: #ffffff; color: #333; overflow: hidden; touch-action: m
 .card.is-flipped .card-inner { transform: rotateY(180deg); }
 
 .card-front, .card-back { 
-    position: absolute; width: 100%; height: 100%; backface-visibility: hidden; 
+    position: absolute; width: 100%; height: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden;
     display: flex; flex-direction: column; justify-content: center; align-items: center; 
     border-radius: 20px; border: 2px solid #eee; overflow: hidden;
 }
 
 .card-front { background: #ffffff; }
 .card-back { background: #e8f5e9; border-color: #a5d6a7; transform: rotateY(180deg); } 
-.card-front h1, .card-back h1 { font-size: 34px; margin-bottom: 10px; z-index: 5; position: relative;}
+.card-front h1, .card-back h1 { font-size: 34px; margin-bottom: 10px; z-index: 5; position: relative; padding: 0 10px;}
 .card-front p { font-size: 18px; color: #888; z-index: 5; position: relative;}
 .roman-numeral { position: absolute; top: 15px; right: 20px; font-size: 18px; font-weight: bold; color: #aaa; font-family: serif; z-index: 5;}
+
+/* YENİ: Ses Butonu Tasarımı */
+.speaker-btn {
+    position: absolute; top: 15px; left: 15px; font-size: 24px; cursor: pointer; z-index: 20; 
+    background: #f2f2f2; border-radius: 50%; width: 40px; height: 40px; 
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: transform 0.2s, background 0.2s;
+}
+.speaker-btn:hover { background: #e0e0e0; transform: scale(1.1); }
+.speaker-btn:active { transform: scale(0.9); }
 
 .overlay-text {
     position: absolute; top: 40px; font-size: 26px; font-weight: 900; opacity: 0; z-index: 10;
@@ -102,32 +105,16 @@ body { background-color: #ffffff; color: #333; overflow: hidden; touch-action: m
 .text-bilemedim { left: 15px; color: #F44336; border-color: #F44336; transform: rotate(0deg); }
 
 .star-particle { position: absolute; font-size: 20px; pointer-events: none; z-index: 1; animation: flyStar 0.7s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
-@keyframes flyStar {
-    0% { transform: translate(0, 0) scale(0.5) rotate(0deg); opacity: 1; }
-    100% { transform: translate(var(--tx), var(--ty)) scale(1.5) rotate(180deg); opacity: 0; }
-}
+@keyframes flyStar { 0% { transform: translate(0, 0) scale(0.5) rotate(0deg); opacity: 1; } 100% { transform: translate(var(--tx), var(--ty)) scale(1.5) rotate(180deg); opacity: 0; } }
 
 #combo-container { position: absolute; top: 15%; width: 100%; text-align: center; pointer-events: none; z-index: 0; display: flex; flex-direction: column; align-items: center; }
 .combo-text { font-size: 30px; font-weight: 900; opacity: 0; text-transform: uppercase; letter-spacing: 2px; animation: popUp 1.2s forwards; }
 .combo-correct { color: #4CAF50; text-shadow: 0 4px 15px rgba(76,175,80,0.6); }
 .combo-wrong { color: #F44336; text-shadow: 0 4px 15px rgba(244,67,54,0.6); }
-@keyframes popUp { 
-    0% { opacity: 0; transform: scale(0.5) translateY(20px); } 
-    20% { opacity: 1; transform: scale(1.2) translateY(0); } 
-    80% { opacity: 1; transform: scale(1) translateY(-10px); } 
-    100% { opacity: 0; transform: scale(0.9) translateY(-30px); } 
-}
+@keyframes popUp { 0% { opacity: 0; transform: scale(0.5) translateY(20px); } 20% { opacity: 1; transform: scale(1.2) translateY(0); } 80% { opacity: 1; transform: scale(1) translateY(-10px); } 100% { opacity: 0; transform: scale(0.9) translateY(-30px); } }
 
-/* NORMAL INSTRUCTION: SADECE OYUN EKRANINDA EN ALTA YAPIŞSIN */
 .instruction { position: absolute; bottom: 20px; text-align: center; color: #777; font-size: 14px; width: 100%; }
-
-/* ÜST ÜSTE BİNME HATASININ ÇÖZÜMÜ: Alt Kategori ekranındaki yazı üste çıksın! */
-#subcategory-screen .instruction {
-    position: relative; 
-    bottom: auto;
-    margin-bottom: 20px !important;
-    flex-shrink: 0;
-}
+#subcategory-screen .instruction { position: relative; bottom: auto; margin-bottom: 20px !important; flex-shrink: 0; }
 
 .result-stats { background: white; padding: 30px; border-radius: 15px; border: 2px solid #eee; text-align: center; width: 100%; max-width: 300px; margin-top: 20px; }
 
@@ -137,6 +124,4 @@ body { background-color: #ffffff; color: #333; overflow: hidden; touch-action: m
     20%, 60% { transform: translateX(-10px); }
     40%, 80% { transform: translateX(10px); }
 }
-.shake {
-    animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
-}
+.shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }

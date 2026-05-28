@@ -7,6 +7,14 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div id="achievement-popup">
+        <div class="icon">🏆</div>
+        <div class="text-cont">
+            <div class="title">Rozet Açıldı!</div>
+            <div class="name">İlk Kan</div>
+        </div>
+    </div>
+
     <div id="intro-screen" class="screen active">
         <h1 class="logo">Word<span class="tag-color">TAG</span></h1>
         <button id="enter-btn" class="pill-btn" onclick="enterApp()">Giriş</button>
@@ -24,8 +32,12 @@
 
     <div id="category-screen" class="screen">
         <button class="back-btn pill-btn" onclick="showScreen('lang-screen')">&#8592; Geri</button>
-        <h2 id="category-title" class="section-title" style="margin-bottom: 50px;">Kategoriler</h2>
+        <button id="view-achievements-btn" class="pill-btn" onclick="viewAchievementCollection()">🏆 Rozet Koleksiyonum</button>
+        
+        <h2 id="category-title" class="section-title" style="margin-top: 40px; margin-bottom: 20px;">Kategoriler</h2>
+        
         <div class="selection-grid" id="category-container"></div>
+        <div class="selection-grid" id="achievement-container" style="display:none;"></div>
     </div>
 
     <div id="subcategory-screen" class="screen">
@@ -38,6 +50,13 @@
 
     <div id="app-screen" class="screen">
         <button class="back-btn pill-btn" onclick="showScreen('category-screen')">&#8592; Çıkış</button>
+        
+        <div class="level-system">
+            <div id="level-title">Lvl 1: Çırak</div>
+            <div id="xp-bar-container"><div id="xp-bar-fill"></div></div>
+            <div id="xp-text">0 / 100 XP</div>
+        </div>
+
         <div class="game-info">
             <div class="timer pill-btn" id="timer-display">00:00</div>
         </div>

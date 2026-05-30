@@ -22,7 +22,8 @@
 
     <div id="lang-screen" class="screen">
         <button class="exit-btn pill-btn" onclick="showScreen('intro-screen')">Çıkış</button>
-        <h2 class="main-title" style="margin-bottom: 50px;">Öğrenmek İstediğin Dili Seç</h2>
+        <button id="dark-mode-btn" class="pill-btn" onclick="toggleDarkMode()">🌙 Gece Modu</button>
+        <h2 class="main-title" style="margin-bottom: 50px; margin-top: 40px;">Öğrenmek İstediğin Dili Seç</h2>
         <div class="selection-grid">
             <div class="liquid-card lang-card" onclick="selectLanguage('İngilizce')"><span>İngilizce</span></div>
             <div class="liquid-card lang-card locked"><span>Türkçe <br>🔒</span></div>
@@ -32,18 +33,79 @@
 
     <div id="category-screen" class="screen">
         <button class="back-btn pill-btn" onclick="showScreen('lang-screen')">&#8592; Geri</button>
-        <button id="view-achievements-btn" class="pill-btn" onclick="viewAchievementCollection()">🏆 Rozet Koleksiyonum</button>
         
-        <h2 id="category-title" class="section-title" style="margin-top: 40px; margin-bottom: 20px;">Kategoriler</h2>
+        <div class="top-dashboard-bar">
+            <div class="stat-pill" onclick="openDashboard()">📊 İstatistikler</div>
+            <div class="stat-pill" style="color: #FFC107; border-color: #FFC107;" onclick="openShop()">🪙 <span id="menu-coin-display">0</span></div>
+        </div>
+        
+        <div style="width: 100%; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 60px; margin-bottom: 20px;" id="top-controls">
+            </div>
+
+        <h2 id="category-title" class="section-title">Kategoriler</h2>
         
         <div class="selection-grid" id="category-container"></div>
         <div class="selection-grid" id="achievement-container" style="display:none;"></div>
     </div>
 
+    <div id="shop-screen" class="screen">
+        <button class="back-btn pill-btn" onclick="showScreen('category-screen')">&#8592; Geri</button>
+        <div class="top-dashboard-bar">
+            <div class="stat-pill" style="color: #FFC107; border-color: #FFC107;">🪙 <span id="shop-coin-display">0</span> Altın</div>
+        </div>
+        <h2 class="section-title" style="margin-top: 40px;">Tema Marketi 🛒</h2>
+        <div class="selection-grid" id="shop-container">
+            </div>
+    </div>
+
+    <div id="dashboard-screen" class="screen">
+        <button class="back-btn pill-btn" onclick="showScreen('category-screen')">&#8592; Geri</button>
+        <h2 class="section-title" style="margin-top: 40px;">Kişisel İstatistikler 📊</h2>
+        
+        <div class="dashboard-grid">
+            <div class="stat-box">
+                <div class="icon">🎯</div>
+                <div class="value" id="dash-accuracy">0%</div>
+                <div class="label">Doğruluk Oranı</div>
+            </div>
+            <div class="stat-box">
+                <div class="icon">🔥</div>
+                <div class="value" id="dash-max-streak">0</div>
+                <div class="label">En Yüksek Kombo</div>
+            </div>
+            <div class="stat-box">
+                <div class="icon">📚</div>
+                <div class="value" id="dash-words-learned">0</div>
+                <div class="label">Kelime Etkileşimi</div>
+            </div>
+            <div class="stat-box">
+                <div class="icon">🏆</div>
+                <div class="value" id="dash-achievements">0/6</div>
+                <div class="label">Kazanılan Rozet</div>
+            </div>
+        </div>
+        <button id="view-achievements-btn-dash" class="pill-btn" style="margin-top:20px; width:100%; max-width:300px; border-color:#FF9800; color:#FF9800;" onclick="showScreen('category-screen'); viewAchievementCollection();">Rozetleri Görüntüle</button>
+    </div>
+
+    <div id="custom-deck-screen" class="screen">
+        <button class="back-btn pill-btn" onclick="showScreen('category-screen')">&#8592; Geri</button>
+        <h2 class="section-title" style="margin-top: 40px;">Yeni Deste Yarat</h2>
+        <input type="text" id="custom-deck-name" placeholder="Deste Adı (örn: Okul Kelimeleri)" class="custom-input">
+        
+        <div id="custom-words-container">
+            <div class="custom-word-row">
+                <input type="text" placeholder="Yabancı Kelime" class="custom-input word-input">
+                <input type="text" placeholder="Türkçe Anlamı" class="custom-input mean-input">
+            </div>
+        </div>
+        
+        <button class="pill-btn" style="margin-top: 15px; background: #e0f2f1;" onclick="addCustomWordRow()">+ Yeni Kelime Satırı</button>
+        <button class="pill-btn" style="margin-top: 30px; background: #4CAF50; color: white;" onclick="saveCustomDeck()">💾 Desteyi Kaydet</button>
+    </div>
+
     <div id="subcategory-screen" class="screen">
         <button class="back-btn pill-btn" onclick="showScreen('category-screen')">&#8592; Geri</button>
         <h2 id="subcategory-title" class="section-title">Alt Kategoriler</h2>
-        <p class="instruction" style="margin-bottom: 30px; font-size: 16px;">Çalışmak istediğin konuları seç:</p>
         <div id="subcategory-container" class="selection-grid"></div>
         <button class="start-btn pill-btn" onclick="startSelectedSubcategories()">Başla</button>
     </div>
@@ -52,7 +114,11 @@
         <button class="back-btn pill-btn" onclick="showScreen('category-screen')">&#8592; Çıkış</button>
         
         <div class="level-system">
-            <div id="level-title">Lvl 1: Çırak</div>
+            <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 3px;">
+                <div id="game-coin-display" style="font-weight:bold; color:#FFC107; font-size:14px; text-shadow:1px 1px 1px rgba(0,0,0,0.2);">🪙 0</div>
+                <div id="streak-display" title="Günlük Seri">🔥 <span id="streak-count">0</span></div>
+                <div id="level-title">Lvl 1: Çırak</div>
+            </div>
             <div id="xp-bar-container"><div id="xp-bar-fill"></div></div>
             <div id="xp-text">0 / 100 XP</div>
         </div>
@@ -60,6 +126,7 @@
         <div class="game-info">
             <div class="timer pill-btn" id="timer-display">00:00</div>
         </div>
+        
         <div id="combo-container"></div>
         <div id="card-container"></div>
         <div class="instruction">
@@ -73,6 +140,8 @@
         <div class="result-stats">
             <p id="correct-text" style="color: #4CAF50; font-size: 24px; font-weight: bold;">Doğru: 0</p>
             <p id="wrong-text" style="color: #F44336; font-size: 24px; font-weight: bold;">Yanlış: 0</p>
+            <hr style="margin:15px 0; border:1px solid #eee;">
+            <p id="earned-coins-text" style="color: #FFC107; font-size: 18px; font-weight: bold;">Kazanılan Altın: +0 🪙</p>
         </div>
         <button class="pill-btn" style="margin-top: 30px;" onclick="showScreen('category-screen')">Kategorilere Dön</button>
     </div>
